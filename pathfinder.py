@@ -33,6 +33,7 @@ class Map:
                 little_rows_of_colors.append(color_int)
         colors_big_list.append(little_rows_of_colors)
         little_rows_of_colors = []
+        print("i am running")
 
     def create_map_image(self):
         image = Image.new('RGB', (600, 600), 'black')
