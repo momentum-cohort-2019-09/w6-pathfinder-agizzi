@@ -53,50 +53,57 @@ class Path:
     def __init__(self, elevations, map):
         self.position = 0
         self.elevations = elevations
-        self.previous_points = []
+        self.all_paths = []
         self.map_pixels = ''
         self.path = []
         self.map = map
+        self.poop = ()
 
     def determine_map_pixels(self):
         self.map.img = self.map.img.convert('RGB')
         self.map_pixels = self.map.img.load()
 
+    # def draw_path(self, point):
+    #     self.map_pixels[point[1], point[0]] = (255, 255, 102)
+
     def draw_path(self, point):
-        self.map_pixels[point[1], point[0]] = (255, 255, 102)
+        self.map_pixels[self.poop] = (255, 255, 102)
 
     def find_path(self):
-        y = 0
-        while y < (len(self.elevations)-1):
-                # y = r.randint(0, len(self.elevations))
-            x = 0
-            while x < (len(self.elevations)-1):
-                point = []
-                NE = abs((self.elevations[y-1][x+1]) - self.position)
-                E = abs((self.elevations[y][x+1]) - self.position)
-                SE = abs((self.elevations[y+1][x+1]) - self.position)
-                smallest_delta = min(NE, E, SE)
-                if smallest_delta == NE:
-                    y -= 1
-                    x += 1
-                    point.append(y)
-                    point.append(x)
-                    self.draw_path(point)
-                    self.position = self.elevations[y][x]
-                elif smallest_delta == E:
-                    x += 1
-                    point.append(y)
-                    point.append(x)
-                    self.draw_path(point)
-                    self.position = self.elevations[y][x]
-                else:
-                    y += 1
-                    x += 1
-                    point.append(y)
-                    point.append(x)
-                    self.draw_path(point)
-                    self.position = self.elevations[y][x]
-        y += 1
+        y = r.randint(0, len(self.elevations))
+        x = 0
+        while x < (len(self.elevations)-1):
+            point = []
+            NE = abs((self.elevations[y-1][x+1]) - self.position)
+            E = abs((self.elevations[y][x+1]) - self.position)
+            SE = abs((self.elevations[y+1][x+1]) - self.position)
+            smallest_delta = min(NE, E, SE)
+            if smallest_delta == NE:
+                y -= 1
+                x += 1
+                self.poop = (x, y)
+                point.append(self.poop)
+                # point.append(x)
+                self.draw_path(point)
+                self.position = self.elevations[x][y]
+            elif smallest_delta == E:
+                x += 1
+                self.poop = (x, y)
+                point.append(self.poop)
+                # point.append(x)
+                self.draw_path(point)
+                self.position = self.elevations[x][y]
+            else:
+                y += 1
+                x += 1
+                self.poop = (x, y)
+                point.append(self.poop)
+                # point.append(x)
+                self.draw_path(point)
+                self.position = self.elevations[x][y]
+            self.path.append(self.poop)
+        self.all_paths.append(self.path)
+        print(self.all_paths)
 
 
 if __name__ == "__main__":
