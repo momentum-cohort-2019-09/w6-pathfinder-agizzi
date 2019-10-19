@@ -66,35 +66,37 @@ class Path:
         self.map_pixels[point[1], point[0]] = (255, 255, 102)
 
     def find_path(self):
-        y = r.randint(0, len(self.elevations))
-        x = 0
-        while x < (len(self.elevations)-1):
-            point = []
-            NE = abs((self.elevations[y-1][x+1]) - self.position)
-            E = abs((self.elevations[y][x+1]) - self.position)
-            SE = abs((self.elevations[y+1][x+1]) - self.position)
-            smallest_delta = min(NE, E, SE)
-            if smallest_delta == NE:
-                y -= 1
-                x += 1
-                point.append(y)
-                point.append(x)
-                self.draw_path(point)
-                self.position = self.elevations[y][x]
-            elif smallest_delta == E:
-                x += 1
-                point.append(y)
-                point.append(x)
-                self.draw_path(point)
-                self.position = self.elevations[y][x]
-
-            else:
-                y += 1
-                x += 1
-                point.append(y)
-                point.append(x)
-                self.draw_path(point)
-                self.position = self.elevations[y][x]
+        y = 0
+        while y < (len(self.elevations)-1):
+                # y = r.randint(0, len(self.elevations))
+            x = 0
+            while x < (len(self.elevations)-1):
+                point = []
+                NE = abs((self.elevations[y-1][x+1]) - self.position)
+                E = abs((self.elevations[y][x+1]) - self.position)
+                SE = abs((self.elevations[y+1][x+1]) - self.position)
+                smallest_delta = min(NE, E, SE)
+                if smallest_delta == NE:
+                    y -= 1
+                    x += 1
+                    point.append(y)
+                    point.append(x)
+                    self.draw_path(point)
+                    self.position = self.elevations[y][x]
+                elif smallest_delta == E:
+                    x += 1
+                    point.append(y)
+                    point.append(x)
+                    self.draw_path(point)
+                    self.position = self.elevations[y][x]
+                else:
+                    y += 1
+                    x += 1
+                    point.append(y)
+                    point.append(x)
+                    self.draw_path(point)
+                    self.position = self.elevations[y][x]
+        y += 1
 
 
 if __name__ == "__main__":
