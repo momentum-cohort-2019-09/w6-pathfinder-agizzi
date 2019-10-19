@@ -14,6 +14,7 @@ class Map:
         self.colors_big_list = []
         self.little_rows_of_colors = []
         self.paths = []
+        self.img = ''
 
     def read_file(self):
         with open(self.file) as text_file:
@@ -47,22 +48,35 @@ class Map:
 
     def create_map_image(self):
         print("create_map")
-        img = Image.fromarray(np.uint8(self.colors_big_list))
-        img.save("test.png")
+        self.img = Image.fromarray(np.uint8(self.colors_big_list))
+        self.img.save("test.png")
 
         # print(self.elevations[0])
 
 
 class Path:
-    def __init__(self, elevations):
+    def __init__(self, elevations, map):
         self.position = 0
         self.elevations = elevations
         self.previous_points = []
+        self.map_pixels = ''
+        self.path = []
+        self.map = map
 
-    def find_next_point(self):
-        y = r.randint(0, 600)
+    def determine_map_pixels(self):
+        self.map.img = self.map.img.convert('RGB')
+        self.map_pixels = self.map.img.load()
+
+    def draw_path(self, point):
+        self.map_pixels[point[1], point[0]] = (255, 0, 0)
+        # print(self.map_pixels)
+        print(self.map_pixels[1, 1])
+
+    def find_path(self):
+        y = r.randint(0, len(self.elevations))
         x = 0
-        while x < 599:
+        while x < (len(self.elevations)-1):
+            point = []
             NE = abs((self.elevations[y-1][x+1]) - self.position)
             E = abs((self.elevations[y][x+1]) - self.position)
             SE = abs((self.elevations[y+1][x+1]) - self.position)
@@ -70,15 +84,25 @@ class Path:
             if smallest_delta == NE:
                 y -= 1
                 x += 1
+                point.append(y)
+                point.append(x)
                 self.position = self.elevations[y][x]
+                self.draw_path(point)
             elif smallest_delta == E:
                 x += 1
+                point.append(y)
+                point.append(x)
                 self.position = self.elevations[y][x]
+                self.draw_path(point)
             else:
                 y += 1
                 x += 1
+                point.append(y)
+                point.append(x)
                 self.position = self.elevations[y][x]
-        print(x)
+                self.draw_path(point)
+            # print(point)
+        # print(x)
 
 
 if __name__ == "__main__":
@@ -88,5 +112,6 @@ if __name__ == "__main__":
     map.find_min_and_max()
     map.get_colors_from_elevations()
     map.create_map_image()
-    path = Path(map.elevations)
-    path.find_next_point()
+    path = Path(map.elevations, map)
+    path.determine_map_pixels()
+    path.find_path()
