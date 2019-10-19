@@ -1,6 +1,7 @@
 import math
 from PIL import Image
 import numpy as np
+import random as r
 
 
 class Map:
@@ -12,6 +13,7 @@ class Map:
         self.text_contents = []
         self.colors_big_list = []
         self.little_rows_of_colors = []
+        self.paths = []
 
     def read_file(self):
         with open(self.file) as text_file:
@@ -48,6 +50,36 @@ class Map:
         img = Image.fromarray(np.uint8(self.colors_big_list))
         img.save("test.png")
 
+        # print(self.elevations[0])
+
+
+class Path:
+    def __init__(self, elevations):
+        self.position = 0
+        self.elevations = elevations
+        self.previous_points = []
+
+    def find_next_point(self):
+        y = r.randint(0, 600)
+        x = 0
+        while x < 599:
+            NE = abs((self.elevations[y-1][x+1]) - self.position)
+            E = abs((self.elevations[y][x+1]) - self.position)
+            SE = abs((self.elevations[y+1][x+1]) - self.position)
+            smallest_delta = min(NE, E, SE)
+            if smallest_delta == NE:
+                y -= 1
+                x += 1
+                self.position = self.elevations[y][x]
+            elif smallest_delta == E:
+                x += 1
+                self.position = self.elevations[y][x]
+            else:
+                y += 1
+                x += 1
+                self.position = self.elevations[y][x]
+        print(x)
+
 
 if __name__ == "__main__":
     map = Map("elevation_small.txt")
@@ -56,3 +88,5 @@ if __name__ == "__main__":
     map.find_min_and_max()
     map.get_colors_from_elevations()
     map.create_map_image()
+    path = Path(map.elevations)
+    path.find_next_point()
