@@ -43,15 +43,10 @@ class Map:
                 self.little_rows_of_colors.append(color_int)
             self.colors_big_list.append(self.little_rows_of_colors)
             self.little_rows_of_colors = []
-        print("i am running")
-        # print(self.colors_big_list)
 
     def create_map_image(self):
-        print("create_map")
         self.img = Image.fromarray(np.uint8(self.colors_big_list))
         self.img.save("test.png")
-
-        # print(self.elevations[0])
 
 
 class Path:
@@ -68,9 +63,7 @@ class Path:
         self.map_pixels = self.map.img.load()
 
     def draw_path(self, point):
-        self.map_pixels[point[1], point[0]] = (255, 0, 0)
-        # print(self.map_pixels)
-        print(self.map_pixels[1, 1])
+        self.map_pixels[point[1], point[0]] = (255, 255, 102)
 
     def find_path(self):
         y = r.randint(0, len(self.elevations))
@@ -86,23 +79,22 @@ class Path:
                 x += 1
                 point.append(y)
                 point.append(x)
-                self.position = self.elevations[y][x]
                 self.draw_path(point)
+                self.position = self.elevations[y][x]
             elif smallest_delta == E:
                 x += 1
                 point.append(y)
                 point.append(x)
-                self.position = self.elevations[y][x]
                 self.draw_path(point)
+                self.position = self.elevations[y][x]
+
             else:
                 y += 1
                 x += 1
                 point.append(y)
                 point.append(x)
-                self.position = self.elevations[y][x]
                 self.draw_path(point)
-            # print(point)
-        # print(x)
+                self.position = self.elevations[y][x]
 
 
 if __name__ == "__main__":
@@ -115,3 +107,4 @@ if __name__ == "__main__":
     path = Path(map.elevations, map)
     path.determine_map_pixels()
     path.find_path()
+    map.img.save("pathfinder.png")
