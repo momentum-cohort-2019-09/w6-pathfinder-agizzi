@@ -58,6 +58,8 @@ class Path:
         self.path = []
         self.map = map
         self.poop = ()
+        self.starting_position_y = 0
+        self.list_of_path_elevation_changes = []
 
     def determine_map_pixels(self):
         self.map.img = self.map.img.convert('RGB')
@@ -70,22 +72,32 @@ class Path:
         self.map_pixels[self.poop] = (255, 255, 102)
 
     def find_path(self):
-        y = r.randint(0, len(self.elevations))
+        # y = r.randint(0, len(self.elevations))
+        total_elevation_change = 0
         x = 0
+        y = self.starting_position_y
         while x < (len(self.elevations)-1):
             point = []
             NE = abs((self.elevations[y-1][x+1]) - self.position)
             E = abs((self.elevations[y][x+1]) - self.position)
-            SE = abs((self.elevations[y+1][x+1]) - self.position)
+            if y >= 599:
+                SE = abs((self.elevations[y][x+1]) - self.position)
+            else:
+                SE = abs((self.elevations[y+1][x+1]) - self.position)
             smallest_delta = min(NE, E, SE)
             if smallest_delta == NE:
-                y -= 1
-                x += 1
+                if y <= 0:
+                    y = y
+                    x += 1
+                else:
+                    y -= 1
+                    x += 1
                 self.poop = (x, y)
                 point.append(self.poop)
                 # point.append(x)
                 self.draw_path(point)
                 self.position = self.elevations[x][y]
+                total_elevation_change += smallest_delta
             elif smallest_delta == E:
                 x += 1
                 self.poop = (x, y)
@@ -93,6 +105,7 @@ class Path:
                 # point.append(x)
                 self.draw_path(point)
                 self.position = self.elevations[x][y]
+                total_elevation_change += smallest_delta
             else:
                 y += 1
                 x += 1
@@ -101,9 +114,15 @@ class Path:
                 # point.append(x)
                 self.draw_path(point)
                 self.position = self.elevations[x][y]
+                total_elevation_change += smallest_delta
             self.path.append(self.poop)
         self.all_paths.append(self.path)
-        print(self.all_paths)
+        self.list_of_path_elevation_changes.append(total_elevation_change)
+
+    def get_all_paths(self):
+        while self.starting_position_y < len(self.elevations):
+            self.find_path()
+            self.starting_position_y += 1
 
 
 if __name__ == "__main__":
@@ -115,5 +134,7 @@ if __name__ == "__main__":
     map.create_map_image()
     path = Path(map.elevations, map)
     path.determine_map_pixels()
-    path.find_path()
+    # path.find_path()
+    path.get_all_paths()
     map.img.save("pathfinder.png")
+    # print(min(path.list_of_path_elevation_changes))
