@@ -60,6 +60,7 @@ class Path:
         self.poop = ()
         self.starting_position_y = 0
         self.list_of_path_elevation_changes = []
+        self.hiking_trail = []
 
     def determine_map_pixels(self):
         self.map.img = self.map.img.convert('RGB')
@@ -111,18 +112,27 @@ class Path:
                 x += 1
                 self.poop = (x, y)
                 point.append(self.poop)
-                # point.append(x)
                 self.draw_path(point)
                 self.position = self.elevations[x][y]
                 total_elevation_change += smallest_delta
             self.path.append(self.poop)
-        self.all_paths.append(self.path)
         self.list_of_path_elevation_changes.append(total_elevation_change)
 
     def get_all_paths(self):
         while self.starting_position_y < len(self.elevations):
             self.find_path()
             self.starting_position_y += 1
+            self.all_paths.append(self.path)
+            self.path = []
+
+    def identify_path_of_least_change(self):
+        self.hiking_trail = self.all_paths[self.list_of_path_elevation_changes.index(min(
+            self.list_of_path_elevation_changes))]
+        # print(len(self.hiking_trail))
+
+    def draw_hiking_trail(self):
+        for pixel in self.hiking_trail:
+            self.map_pixels[pixel] = (0, 0, 255)
 
 
 if __name__ == "__main__":
@@ -136,5 +146,7 @@ if __name__ == "__main__":
     path.determine_map_pixels()
     # path.find_path()
     path.get_all_paths()
+    # print(path.all_paths[1])
+    path.identify_path_of_least_change()
+    path.draw_hiking_trail()
     map.img.save("pathfinder.png")
-    # print(min(path.list_of_path_elevation_changes))
