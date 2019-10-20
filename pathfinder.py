@@ -81,7 +81,7 @@ class Path:
             point = []
             NE = abs((self.elevations[y-1][x+1]) - self.position)
             E = abs((self.elevations[y][x+1]) - self.position)
-            if y >= 599:
+            if y >= (len(self.elevations)-1):
                 SE = abs((self.elevations[y][x+1]) - self.position)
             else:
                 SE = abs((self.elevations[y+1][x+1]) - self.position)
@@ -136,7 +136,7 @@ class Path:
 
 
 if __name__ == "__main__":
-    map = Map("elevation_small.txt")
+    map = Map("elevation_large.txt")
     map.read_file()
     map.find_elevations()
     map.find_min_and_max()
