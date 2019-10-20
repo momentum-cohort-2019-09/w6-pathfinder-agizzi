@@ -46,7 +46,8 @@ class Map:
 
     def create_map_image(self):
         self.img = Image.fromarray(np.uint8(self.colors_big_list))
-        self.img.save("test.png")
+        # self.img.save("test.png")
+        # saves a test image
 
 
 class Path:
