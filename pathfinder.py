@@ -58,6 +58,7 @@ class Path:
         self.path = []
         self.map = map
         self.poop = ()
+        # poop is a tuple of (x,y) coordinates
         self.starting_position_y = 0
         self.list_of_path_elevation_changes = []
         self.hiking_trail = []
@@ -66,14 +67,10 @@ class Path:
         self.map.img = self.map.img.convert('RGB')
         self.map_pixels = self.map.img.load()
 
-    # def draw_path(self, point):
-    #     self.map_pixels[point[1], point[0]] = (255, 255, 102)
-
     def draw_path(self, point):
         self.map_pixels[self.poop] = (255, 255, 102)
 
     def find_path(self):
-        # y = r.randint(0, len(self.elevations))
         total_elevation_change = 0
         x = 0
         y = self.starting_position_y
@@ -95,7 +92,6 @@ class Path:
                     x += 1
                 self.poop = (x, y)
                 point.append(self.poop)
-                # point.append(x)
                 self.draw_path(point)
                 self.position = self.elevations[x][y]
                 total_elevation_change += smallest_delta
@@ -103,7 +99,6 @@ class Path:
                 x += 1
                 self.poop = (x, y)
                 point.append(self.poop)
-                # point.append(x)
                 self.draw_path(point)
                 self.position = self.elevations[x][y]
                 total_elevation_change += smallest_delta
@@ -128,7 +123,6 @@ class Path:
     def identify_path_of_least_change(self):
         self.hiking_trail = self.all_paths[self.list_of_path_elevation_changes.index(min(
             self.list_of_path_elevation_changes))]
-        # print(len(self.hiking_trail))
 
     def draw_hiking_trail(self):
         for pixel in self.hiking_trail:
@@ -144,9 +138,7 @@ if __name__ == "__main__":
     map.create_map_image()
     path = Path(map.elevations, map)
     path.determine_map_pixels()
-    # path.find_path()
     path.get_all_paths()
-    # print(path.all_paths[1])
     path.identify_path_of_least_change()
     path.draw_hiking_trail()
     map.img.save("pathfinder.png")
